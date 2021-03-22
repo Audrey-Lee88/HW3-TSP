@@ -438,7 +438,6 @@ class Map:
         for i in range(0,len(self.tour)):
             if self.tour[i] != self.tour[-1] or i == 0:
                 sum += self.adjMat[self.tour[i]][self.tour[i+1]]
-        print(sum, self.tour,'2-approx')
 
     def is_valid(self, lst):
         weight = 0
@@ -488,7 +487,6 @@ class Map:
                 if weight < current_pathweight:
                     current_pathweight = weight
                     min_path = perm
-        print([i.rank for i in min_path], current_pathweight,'optimal')
         self.tourOpt = [i.rank for i in min_path]
 
     """
