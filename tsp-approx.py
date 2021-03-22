@@ -408,7 +408,6 @@ class Map:
         # Current node is now visited
         if v not in visited:
             visited.append(v)
-            # print(v,visited,'yo')
         # Recur for all the neighbors of v
         for neighbour in v.mstN:
             if neighbour not in visited:
@@ -419,25 +418,10 @@ class Map:
     """
 
     def getTSPApprox(self):
-        # 1) Let 1 be the starting and ending point for salesman.
-        # 2) Construct MST from with 1 as root using Prim’s Algorithm.
-        # 3) List vertices visited in preorder walk of the constructed MST and add 1 at the end.
-        # self.tour = preorder([],self.mst,0)
-        # self.tour.append(self.start)
-        # print(self.tour)
-
-        # print(self.mst[2].vertices)
-        # self.tour = self.mst
-        # print(self.tour)
-        # return self.tour
         visited = []
         self.DFS(self.start,visited)
         visited.append(self.start)
         self.tour = [i.rank for i in list(visited)]
-        sum = 0
-        for i in range(0,len(self.tour)):
-            if self.tour[i] != self.tour[-1] or i == 0:
-                sum += self.adjMat[self.tour[i]][self.tour[i+1]]
 
     def is_valid(self, lst):
         weight = 0
@@ -460,9 +444,7 @@ class Map:
     getTSPOptimal: brute-force approach to finding the optimal tour.
     """
     def getTSPOptimal(self):
-        ### TODO ###
         # Complete a brute-force TSP solution!
-        # Replace the following two lines with an actual implementation.
         not_start = [i for i in self.adjList if i != self.start]
         next_permuation = list(permutations(not_start))
         # find first valid permutation
