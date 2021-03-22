@@ -403,6 +403,17 @@ class Map:
                     self.mst.append(e)
         return
 
+    def DFS(self, v, visited):
+
+        # Current node is now visited
+        if v not in visited:
+            visited.append(v)
+            # print(v,visited,'yo')
+        # Recur for all the neighbors of v
+        for neighbour in v.mstN:
+            if neighbour not in visited:
+                self.DFS(neighbour, visited)
+
     """
     getTSPApprox: uses the MST to find the approximate solution to TSP.
     """
@@ -416,9 +427,18 @@ class Map:
         # print(self.tour)
 
         # print(self.mst[2].vertices)
-        self.tour = self.mst
-        print(self.tour)
-        return self.tour
+        # self.tour = self.mst
+        # print(self.tour)
+        # return self.tour
+        visited = []
+        self.DFS(self.start,visited)
+        visited.append(self.start)
+        self.tour = [i.rank for i in list(visited)]
+        sum = 0
+        for i in range(0,len(self.tour)):
+            if self.tour[i] != self.tour[-1] or i == 0:
+                sum += self.adjMat[self.tour[i]][self.tour[i+1]]
+        print(sum, self.tour,'2-approx')
 
     def is_valid(self, lst):
         weight = 0
@@ -468,8 +488,8 @@ class Map:
                 if weight < current_pathweight:
                     current_pathweight = weight
                     min_path = perm
-        # print([i.rank for i in min_path], current_pathweight)
-        return [i.rank for i in min_path]
+        print([i.rank for i in min_path], current_pathweight,'optimal')
+        self.tourOpt = [i.rank for i in min_path]
 
     """
     clearMap: this function will reset the MST and tour for the map, along with
@@ -717,6 +737,8 @@ def testMSTApprox():
     Tpass = 0
     Mflag = False
     Tflag = False
+    flag_left = False
+    flag_right = False
     t = 9
     tol = 1e-6
 
@@ -773,14 +795,32 @@ def testMSTApprox():
                     Tflag = True
             if ind == 7:
                 ans = 40030.173592
+                ans2 = 78992.875888
                 if (w < ans - tol) or (w > ans + tol):
-                    print('Test %d: Wrong TSP!' % ind)
+                    print('Test %d: Wrong TSP (when traversing the tree via DFS from left to right)!' % ind)
+                    flag_left = True
+                if (w < ans2 - tol) or (w > ans2 + tol):
+                    print('Test %d: Wrong TSP (when traversing the tree via DFS from right to left)!' % ind)
+                    flag_right = True
+                if flag_left and flag_right:
+                    print("[FAILED} Test %d: Wrong TSP considering both directions of DFS traversal" % ind)
                     Tflag = True
+                if (flag_left or flag_right) and not Tflag:
+                    print("Test %d still passed." % ind)
             if ind == 8:
                 ans = 79526.611536
+                ans2 = 78992.875888
                 if (w < ans - tol) or (w > ans + tol):
-                    print('Test %d: Wrong TSP!' % ind)
+                    print('Test %d: Wrong TSP (when traversing the tree via DFS from left to right)!' % ind)
+                    flag_left = True
+                if (w < ans2 - tol) or (w > ans2 + tol):
+                    print('Test %d: Wrong TSP (when traversing the tree via DFS from right to left)!' % ind)
+                    flag_right = True
+                if flag_left and flag_right:
+                    print("[FAILED} Test %d: Wrong TSP considering both directions of DFS traversal" % ind)
                     Tflag = True
+                if (flag_left or flag_right) and not Tflag:
+                    print("Test %d still passed." % ind)
         else:
             Tflag = True
         if not Mflag:
